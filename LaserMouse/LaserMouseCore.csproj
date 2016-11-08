@@ -67,7 +67,7 @@
   <ItemGroup>
     <Compile Include="Category.cs" />
     <Compile Include="NBestList.cs" />
-    <Compile Include="CoreEntry.cs" />
+    <Compile Include="RecognizeCoreEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recognizer.cs" />
     <Compile Include="Unistroke.cs" />

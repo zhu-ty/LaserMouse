@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace LaserMouseCore
 {
-    public class Recognize
+    public class RecognizeCoreEntry
     {
 
         public bool add_gesture(string filename)
@@ -19,13 +19,17 @@ namespace LaserMouseCore
             return r.LoadGesture(filename);
         }
 
-        public async Task<bool> get_results(Dictionary<long, PointF> time_point_list, bool golden = true)
+        public async Task<bool> get_results(LinkedList<long> time_p, LinkedList<PointF> point_p, bool golden = true)
         {
             bool ret = false;
             List<TimePointF> tpf = new List<TimePointF>();
-            foreach (KeyValuePair<long, PointF> iter in time_point_list)
+            LinkedListNode<long> node_t = time_p.First;
+            LinkedListNode<PointF> node_p = point_p.First;
+            for (int i = 0; i < time_p.Count; i++)
             {
-                tpf.Add(new TimePointF(iter.Value, iter.Key));
+                tpf.Add(new TimePointF(node_p.Value, node_t.Value));
+                node_p = node_p.Next;
+                node_t = node_t.Next;
             }
             ResultEventArgs rea = new ResultEventArgs();
             await Task.Run(() =>
