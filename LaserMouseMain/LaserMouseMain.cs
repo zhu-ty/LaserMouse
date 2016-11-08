@@ -27,6 +27,7 @@ namespace LaserMouseMain
 
         static void Main(string[] args)
         {
+            r.ResultsCalculatedEvent += new RecognizeCoreEntry.ResultEventHandler(ResultEvent);
             base_time = DateTime.Now;
             const int tar_port = 5874;
             while (true)
@@ -46,12 +47,21 @@ namespace LaserMouseMain
                     {
                         send_rev(split[1]);
                     }
+                    if (split[0] == "r")
+                    {
+                        var a = r.get_results(point_time_list, point_list);
+                    }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
             }
+        }
+
+        public static void ResultEvent(object obj, RecognizeCoreEntry.ResultEventArgs e)
+        {
+            Console.WriteLine(e.results.Max.result + " " + e.results.Max.percent.ToString() + "%");
         }
 
         static async void send_rev(string mes)
@@ -64,6 +74,12 @@ namespace LaserMouseMain
 
         static void add_data(Client.ReceiveEventArgs data)
         {
+            int pt = BitConverter.ToInt32(data.data, 8));
+            if (pt == 0)
+            {
+                point_time_list.Clear();
+                point_list.Clear();
+            }
             float x = (float)(BitConverter.ToInt32(data.data, 0));
             float y = (float)(BitConverter.ToInt32(data.data, 4));
             long t = (long)Math.Round((data.time - base_time).TotalMilliseconds);
