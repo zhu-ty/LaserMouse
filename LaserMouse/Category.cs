@@ -66,7 +66,7 @@ using LaserMouseCore;
 
 namespace LaserMouseCore
 {
-    public class Category
+    class Category
     {
         private string _name;
         private List<Unistroke> _prototypes;

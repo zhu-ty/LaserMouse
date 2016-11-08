@@ -66,7 +66,7 @@ using LaserMouseCore;
 
 namespace LaserMouseCore
 {
-	public class Unistroke : IComparable
+    class Unistroke : IComparable
 	{
         public string Name;
         public List<TimePointF> RawPoints; // raw points (for drawing) -- read in from XML

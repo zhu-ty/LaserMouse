@@ -65,7 +65,7 @@ using LaserMouseCore;
 
 namespace LaserMouseCore
 {
-    public class NBestList
+    class NBestList
     {
         #region NBestResult Inner Class
 

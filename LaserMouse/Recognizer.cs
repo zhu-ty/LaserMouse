@@ -71,7 +71,7 @@ using LaserMouseCore;
 
 namespace LaserMouseCore
 {
-	public class Recognizer
+    class Recognizer
 	{
 		#region Members
 

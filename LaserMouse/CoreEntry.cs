@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace LaserMouseCore
 {
-    class Recognize
+    public class Recognize
     {
 
         public bool add_gesture(string filename)
@@ -83,7 +83,7 @@ namespace LaserMouseCore
         }
     }
 
-    class Mouse_Keyboard_Press
+    public class Mouse_Keyboard_Press
     {
         /// <summary>
         /// 移动鼠标，注意x和y

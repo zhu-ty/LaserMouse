@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaserMouseCore", "LaserMouse\LaserMouseCore.csproj", "{C215227F-FD32-4F4E-BD7C-BFEFBB92D1FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaserMouseMain", "LaserMouseMain\LaserMouseMain.csproj", "{9D53BE1C-D09B-4407-BA55-AA2018EB1B8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C215227F-FD32-4F4E-BD7C-BFEFBB92D1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C215227F-FD32-4F4E-BD7C-BFEFBB92D1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C215227F-FD32-4F4E-BD7C-BFEFBB92D1FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D53BE1C-D09B-4407-BA55-AA2018EB1B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D53BE1C-D09B-4407-BA55-AA2018EB1B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D53BE1C-D09B-4407-BA55-AA2018EB1B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D53BE1C-D09B-4407-BA55-AA2018EB1B8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
