@@ -118,6 +118,21 @@ namespace LaserMouseMain
             });
         }
 
+        static void send_rev_task_sync(string mes)
+        {
+            byte[] mes_ = Encoding.ASCII.GetBytes(mes);
+            byte[] send_ = new byte[Client.data_len];
+            mes_.CopyTo(send_, 0);
+            var rec = c.send_and_receive_sync(send_);
+            if (rec.data != null)
+                add_data_sync(rec);
+            if (point_list.Count > 0)
+            {
+                Console.WriteLine(point_time_list.Last.Value.ToString() + " " +
+                    point_list.Last.Value.ToString());
+            }
+        }
+
         static async Task send_rev_task(string mes)
         {
             byte[] mes_ = Encoding.ASCII.GetBytes(mes);
@@ -152,9 +167,34 @@ namespace LaserMouseMain
             list_lock.ReleaseMutex();
         }
 
-        static async Task add_data(Client.ReceiveEventArgs data)
+        static void add_data_sync(Client.ReceiveEventArgs data)
         {
-            
+            int pt = BitConverter.ToInt32(data.data, 8);
+            if (pt == 0)
+            {
+                if (point_time_list.Count != 0)
+                {
+                    var wait = r.get_results(point_time_list, point_list);
+                    while (!wait.IsCompleted) ;
+                }
+                point_time_list.Clear();
+                point_list.Clear();
+                return;
+            }
+            float x = (float)(BitConverter.ToInt32(data.data, 0));
+            float y = (float)(BitConverter.ToInt32(data.data, 4));
+            long t = (long)Math.Round((data.time - base_time).TotalMilliseconds);
+            if (point_time_list.Count >= MAX_NODE)
+            {
+                point_time_list.RemoveFirst();
+                point_list.RemoveFirst();
+            }
+            point_time_list.AddLast(t);
+            point_list.AddLast(new PointF(x, y));
+        }
+
+        static async Task add_data(Client.ReceiveEventArgs data)
+        { 
             int pt = BitConverter.ToInt32(data.data, 8);
             if (pt == 0)
             {
