@@ -35,6 +35,24 @@ namespace LaserMouseMain
             return true;
         }
 
+        public ReceiveEventArgs send_and_receive_sync(byte[] buffer)
+        {
+            ReceiveEventArgs ret = new ReceiveEventArgs();
+            try
+            {
+                socket.Send(buffer);
+                byte[] rec_buf = new byte[data_len];
+                socket.Receive(rec_buf);
+                ret.data = rec_buf;
+                ret.time = DateTime.Now;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return ret;
+        }
+
         public async Task<ReceiveEventArgs> send_and_receive(byte[] buffer)
         {
             ReceiveEventArgs ret = new ReceiveEventArgs();
