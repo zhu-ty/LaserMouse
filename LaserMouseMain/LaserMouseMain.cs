@@ -30,7 +30,7 @@ namespace LaserMouseMain
         {
             r.ResultsCalculatedEvent += new RecognizeCoreEntry.ResultEventHandler(ResultEvent);
             base_time = DateTime.Now;
-            const int tar_port = 986;
+            const int tar_port = 1986;
             Mutex m = new Mutex();
             r.add_gesture("circle.xml");
             r.add_gesture("N.xml");
