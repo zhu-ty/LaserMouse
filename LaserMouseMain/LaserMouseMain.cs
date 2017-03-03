@@ -7,6 +7,7 @@ using LaserMouseCore;
 using System.Drawing;
 using System.Threading;
 
+
 namespace LaserMouseMain
 {
     class LaserMouseMain
@@ -18,6 +19,7 @@ namespace LaserMouseMain
         static RecognizeCoreEntry r = new RecognizeCoreEntry();
         static DateTime base_time;
         static bool loop = false;
+        static KeyboardHook kh;
 
         const int MAX_NODE = 1000;
 
@@ -32,8 +34,15 @@ namespace LaserMouseMain
             base_time = DateTime.Now;
             const int tar_port = 1986;
             Mutex m = new Mutex();
-            r.add_gesture("circle.xml");
-            r.add_gesture("N.xml");
+            //r.add_gesture("circle.xml");
+            //r.add_gesture("N.xml");
+
+            kh = new KeyboardHook();
+            //kh.UnHook();
+            kh.SetHook();
+            
+            kh.OnKeyDownEvent += PageUp;
+            
             while (true)
             {
                 try
@@ -81,6 +90,16 @@ namespace LaserMouseMain
                 {
                     Console.WriteLine(e.Message);
                 }
+            }
+            kh.UnHook();
+        }
+
+        public static void PageUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (e.KeyData == System.Windows.Forms.Keys.PageUp)
+            {
+                Mouse_Keyboard_Press.mouse_left_down();
+                Mouse_Keyboard_Press.mouse_left_up();
             }
         }
 

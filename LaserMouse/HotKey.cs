@@ -55,6 +55,7 @@ namespace LaserMouseCore
     }
     public class KeyboardHook
     {
+        public List<Keys> Blocked_Keys = new List<Keys>();
         int hHook;
         Win32Api.HookProc KeyboardHookDelegate;
         public event KeyEventHandler OnKeyDownEvent;
@@ -93,7 +94,7 @@ namespace LaserMouseCore
                 if (OnKeyDownEvent != null && (wParam == Win32Api.WM_KEYDOWN || wParam == Win32Api.WM_SYSKEYDOWN))
                 {
                     KeyEventArgs e = new KeyEventArgs(GetDownKeys(keyData));
-
+                    
                     OnKeyDownEvent(this, e);
                 }
                 //WM_KEYDOWN消息将引发OnKeyPressEvent 
@@ -124,6 +125,12 @@ namespace LaserMouseCore
                 {
                     KeyEventArgs e = new KeyEventArgs(GetDownKeys(keyData));
                     OnKeyUpEvent(this, e);
+                }
+
+                foreach (Keys k in Blocked_Keys)
+                {
+                    if (GetDownKeys(keyData) == k)
+                        return 1;
                 }
             }
             return Win32Api.CallNextHookEx(hHook, nCode, wParam, lParam);

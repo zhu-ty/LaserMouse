@@ -46,6 +46,21 @@ namespace LaserMouseCore
             return ret;
         }
 
+        public bool get_results_sync(List<TimePointF> tpf, bool golden = true)
+        {
+            bool ret = false;
+            var re_list = r.Recognize(tpf, golden);
+            int c = re_list.Names.Length;
+            ResultEventArgs rea = new ResultEventArgs();
+            for (int i = 0; i < c; i++)
+            {
+                rea.add_result(re_list[i].Name, re_list[i].Score);
+            }
+            ResultsCalculatedEvent(this, rea);
+            ret = true;
+            return ret;
+        }
+
         /// <summary>
         /// How to use:
         /// <para>Recognize e;</para>
