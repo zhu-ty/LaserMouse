@@ -156,13 +156,15 @@ namespace LaserMouseMain
             byte[] send_ = new byte[Client.data_len];
             mes_.CopyTo(send_, 0);
             var rec = await c.send_and_receive(send_);
-            if(rec.data != null)
-                await add_data(rec);
+            //if(rec.data != null)
+                //await add_data(rec);
             list_lock.WaitOne();
-            if (point_list.Count > 0)
+            if (rec.data != null)
             {
-                Console.WriteLine(point_time_list.Last.Value.ToString() + " " +
-                    point_list.Last.Value.ToString());
+                float x = (float)(BitConverter.ToInt32(rec.data, 0));
+                float y = (float)(BitConverter.ToInt32(rec.data, 4));
+                Console.WriteLine(x.ToString() + " " +
+                   y.ToString());
             }
             list_lock.ReleaseMutex();
         }
