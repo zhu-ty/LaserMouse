@@ -17,6 +17,8 @@ namespace LaserWindowMain
 {
     public partial class Form1 : Form
     {
+        Keys key1 = Keys.Up;
+        Keys key2 = Keys.Down;
         KeyboardHook kh;
         bool pressing = false;
         Client c = new Client();
@@ -34,14 +36,16 @@ namespace LaserWindowMain
         private void Form1_Load(object sender, EventArgs e)
         {
             kh = new KeyboardHook();
-            //kh.SetHook();
-            kh.Blocked_Keys.Add(Keys.PageUp);
-            kh.Blocked_Keys.Add(Keys.PageDown);
+            kh.SetHook();
+            kh.Blocked_Keys.Add(key1);
+            kh.Blocked_Keys.Add(key2);
             kh.OnKeyDownEvent += KeyDownX;
             kh.OnKeyUpEvent += KeyUpX;
             new ConsoleHelper(this.textBox3);
             base_time = DateTime.Now;
             rce.ResultsCalculatedEvent += Recognized;
+            rce.add_gesture("circle.xml");
+            rce.add_gesture("N.xml");
         }
 
         void Recognized(object obj, RecognizeCoreEntry.ResultEventArgs e)
@@ -54,13 +58,13 @@ namespace LaserWindowMain
 
         void KeyDownX(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyData == System.Windows.Forms.Keys.PageUp && !pressing)
+            if (e.KeyData == key1 && !pressing)
             {
                 Mouse_Keyboard_Press.mouse_left_down();
                 pressing = true;
                 //Mouse_Keyboard_Press.mouse_left_up();
             }
-            if (e.KeyData == Keys.PageDown && !recording)
+            if (e.KeyData == key2 && !recording)
             {
                 recording = true;
             }
@@ -68,13 +72,13 @@ namespace LaserWindowMain
 
         void KeyUpX(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyData == System.Windows.Forms.Keys.PageUp)
+            if (e.KeyData == key1)
             {
                 //Mouse_Keyboard_Press.mouse_left_down();
                 Mouse_Keyboard_Press.mouse_left_up();
                 pressing = false;
             }
-            if (e.KeyData == Keys.PageDown && !recording)
+            if (e.KeyData == key2 && !recording)
             {
                 recording = false;
                 rce.get_results_sync(tpf);
@@ -105,20 +109,23 @@ namespace LaserWindowMain
         {
             try
             {
-                if (c.connected)
+                if (!timer1.Enabled && c.connected)
                 {
-                    if (!timer1.Enabled)
-                    {
-                        kh.SetHook();
-                        button2.Text = "停止";
-                        timer1.Enabled = true;
-                    }
-                    else
-                    {
-                        timer1.Enabled = false;
-                        kh.UnHook();
-                        button2.Text = "开始";
-                    }
+                    Console.WriteLine("采集开始");
+                    kh.SetHook();
+                    button2.Text = "停止";
+                    timer1.Enabled = true;
+                }
+                else if (timer1.Enabled)
+                {
+                    Console.WriteLine("采集结束");
+                    timer1.Enabled = false;
+                    kh.UnHook();
+                    button2.Text = "开始";
+                }
+                else
+                {
+                    Console.WriteLine("未连接");
                 }
             }
             catch (Exception ex)
