@@ -36,7 +36,7 @@ namespace LaserMouseCore
         /// </summary>
         public const int data_len = 16;
 
-        public const int CONST_PORT = 986;
+        public const int CONST_PORT = 1986;
 
 
         public bool connect(IPAddress target_ip, int listen_port = CONST_PORT)
