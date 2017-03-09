@@ -68,16 +68,20 @@ void *LaserServer::CommunicateThread(void *ptr)
 		{
 			s->_mtx->lock();
 			char buffer_send[DATA_LEN] = { 0 };
+			buffer_send[0] = 'R';
+			buffer_send[1] = 'E';
+			buffer_send[2] = 'T';
+			buffer_send[3] = 'X';
 			char buffer_tmp[4];
 			intToByte(*(s->_x), buffer_tmp);
-			memcpy(buffer_send, buffer_tmp, 4);
-			intToByte(*(s->_y), buffer_tmp);
 			memcpy(buffer_send + 4, buffer_tmp, 4);
+			intToByte(*(s->_y), buffer_tmp);
+			memcpy(buffer_send + 8, buffer_tmp, 4);
 			if(*(s->_x) == -1 || *(s->_y) == -1)
 				intToByte(0, buffer_tmp);
 			else
 				intToByte(1, buffer_tmp);
-			memcpy(buffer_send + 8, buffer_tmp, 4);
+			memcpy(buffer_send + 12, buffer_tmp, 4);
 			s->_mtx->unlock();
 			s->communicate_socket.send(buffer_send, DATA_LEN);
 		}

@@ -78,8 +78,9 @@ int main(int argc, char** argv)
 		if (mouse.x-x0<3000 && mouse.y-y0<3000){
 			//SetCursorPos(mouse.x,mouse.y);
 			cout<<"set mouse x="<<mouse.x<<" y="<<mouse.y<<endl;
+			cout<<"width:"<<bgr_frame[0].rows<<"height:"<<bgr_frame[0].cols<<endl;
 			x0=mouse.x,y0=mouse.y;
-			x=mouse.x,y=mouse.y;
+			x=10000-mouse.x,y=mouse.y;
 		}
 		else
 		{
