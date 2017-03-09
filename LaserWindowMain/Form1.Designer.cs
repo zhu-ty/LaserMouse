@@ -60,7 +60,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(56, 21);
             this.textBox2.TabIndex = 2;
-            this.textBox2.Text = "1985";
+            this.textBox2.Text = "1986";
             // 
             // button2
             // 
@@ -74,6 +74,7 @@
             // 
             // timer1
             // 
+            this.timer1.Interval = 20;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // textBox3

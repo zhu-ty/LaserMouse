@@ -17,8 +17,17 @@ namespace LaserWindowMain
 {
     public partial class Form1 : Form
     {
-        Keys key1 = Keys.Up;
-        Keys key2 = Keys.Down;
+        Keys key1 = Keys.PageUp;
+        Keys key2 = Keys.PageDown;
+        const int FullHW = 10000;
+        const int offsetX = 1366;
+        const int offsetY = 0;
+        const int ScreenWidth = 1920;
+        const int ScreenHeight = 1080;
+        const int FullScreenWidth = 1920 + 1366;
+        const int FullScreenHeight = 1080;
+
+
         KeyboardHook kh;
         bool pressing = false;
         Client c = new Client();
@@ -36,7 +45,6 @@ namespace LaserWindowMain
         private void Form1_Load(object sender, EventArgs e)
         {
             kh = new KeyboardHook();
-            kh.SetHook();
             kh.Blocked_Keys.Add(key1);
             kh.Blocked_Keys.Add(key2);
             kh.OnKeyDownEvent += KeyDownX;
@@ -46,12 +54,15 @@ namespace LaserWindowMain
             rce.ResultsCalculatedEvent += Recognized;
             rce.add_gesture("circle.xml");
             rce.add_gesture("N.xml");
+
+
+            kh.SetHook();
         }
 
         void Recognized(object obj, RecognizeCoreEntry.ResultEventArgs e)
         {
             if (e.results.Max.percent > 0.8)
-                Console.WriteLine("Recognized Patten:" + e.results.Max.result);
+                Console.WriteLine("Recognized Patten:" + e.results.Max.result + " percent:"+e.results.Max.percent.ToString());
             else
                 Console.WriteLine("Recognized but not a fair result");
         }
@@ -66,7 +77,7 @@ namespace LaserWindowMain
             }
             if (e.KeyData == key2 && !recording)
             {
-                recording = true;
+                //recording = true;
             }
         }
 
@@ -78,11 +89,15 @@ namespace LaserWindowMain
                 Mouse_Keyboard_Press.mouse_left_up();
                 pressing = false;
             }
-            if (e.KeyData == key2 && !recording)
+            if (e.KeyData == key2)
             {
-                recording = false;
-                rce.get_results_sync(tpf);
-                tpf.Clear();
+                if (recording)
+                {
+                    if (tpf.Count > 10)
+                        rce.get_results_sync(tpf);
+                    tpf.Clear();
+                }
+                recording = !recording;
             }
         }
 
@@ -97,6 +112,7 @@ namespace LaserWindowMain
             {
                 System.Net.IPAddress ip = System.Net.IPAddress.Parse(textBox1.Text);
                 c.connect(ip, int.Parse(textBox2.Text));
+                Console.WriteLine("连接成功");
             }
             catch (Exception ex)
             {
@@ -137,19 +153,39 @@ namespace LaserWindowMain
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            List<byte[]> to_send = new List<byte[]>();
-            to_send.Add(new byte[] { (byte)'G', (byte)'E', (byte)'T', (byte)'X' });
-            to_send.Add(BitConverter.GetBytes(0));
-            to_send.Add(BitConverter.GetBytes(0));
-            to_send.Add(BitConverter.GetBytes(0));
-            var re = c.send_and_receive_sync(Client.byte_connect(to_send));
-            int x = (BitConverter.ToInt32(re.data, 0));
-            int y = (BitConverter.ToInt32(re.data, 4));
-
-            Console.WriteLine("Received: x=" + x.ToString() + " y=" + y.ToString());
-            if (recording && x != -1 && y != -1)
+            try
             {
-                tpf.Add(new TimePointF(x, y, (long)Math.Round((re.time - base_time).TotalMilliseconds)));
+                if (c.connected)
+                {
+                    List<byte[]> to_send = new List<byte[]>();
+                    to_send.Add(new byte[] { (byte)'G', (byte)'E', (byte)'T', (byte)'X' });
+                    to_send.Add(BitConverter.GetBytes(0));
+                    to_send.Add(BitConverter.GetBytes(0));
+                    to_send.Add(BitConverter.GetBytes(0));
+                    var re = c.send_and_receive_sync(Client.byte_connect(to_send));
+                    int x = (BitConverter.ToInt32(re.data, 4));
+                    int y = (BitConverter.ToInt32(re.data, 8));
+
+                    //Console.WriteLine("Received: x=" + x.ToString() + " y=" + y.ToString());
+                    if (x != -1 && y != -1)
+                    {
+                        if(recording)
+                            tpf.Add(new TimePointF(x, y, (long)Math.Round((re.time - base_time).TotalMilliseconds)));
+                        double x_ = (double)x / FullHW;
+                        double y_ = (double)y / FullHW;
+                        LaserMouseCore.Mouse_Keyboard_Press.mouse_move((int)(x_ * ScreenWidth) + offsetX, (int)(y_ * ScreenHeight) + offsetY, FullScreenWidth, FullScreenHeight);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("未连接");
+                    button2_Click(this, new EventArgs());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("未连接");
+                button2_Click(this, new EventArgs());
             }
         }
     }
