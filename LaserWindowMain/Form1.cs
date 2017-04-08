@@ -13,6 +13,7 @@ using LaserMouseCore;
 using System.IO;
 using System.Threading;
 
+
 namespace LaserWindowMain
 {
     public partial class Form1 : Form
@@ -20,13 +21,26 @@ namespace LaserWindowMain
         Keys key1 = Keys.PageUp;
         Keys key2 = Keys.PageDown;
         const int FullHW = 10000;
-        const int offsetX = 1366;
+        //const int offsetX = 1366;
+        const int offsetX = 0;
         const int offsetY = 0;
-        const int ScreenWidth = 1920;
-        const int ScreenHeight = 1080;
-        const int FullScreenWidth = 1920 + 1366;
-        const int FullScreenHeight = 1080;
+        //const int ScreenWidth = 1920;
+        //const int ScreenHeight = 1080;
+        //const int FullScreenWidth = 1920 + 1366;
+        //const int FullScreenHeight = 1080;
+        const int ScreenWidth = 1366;
+        const int ScreenHeight = 768;
+        const int FullScreenWidth = 1366;
+        const int FullScreenHeight = 768;
 
+        const int A_x = 1100;
+        const int A_y = 1000;
+        const int B_x = 8000;
+        const int B_y = 1100;
+        const int C_x = 8100;
+        const int C_y = 6900;
+        const int D_x = 1800;
+        const int D_y = 7200;
 
         KeyboardHook kh;
         bool pressing = false;
@@ -62,7 +76,7 @@ namespace LaserWindowMain
         void Recognized(object obj, RecognizeCoreEntry.ResultEventArgs e)
         {
             if (e.results.Max.percent > 0.8)
-                Console.WriteLine("Recognized Patten:" + e.results.Max.result + " percent:"+e.results.Max.percent.ToString());
+                Console.WriteLine("Recognized Patten:" + e.results.Max.result + " percent:" + e.results.Max.percent.ToString());
             else
                 Console.WriteLine("Recognized but not a fair result");
         }
@@ -165,11 +179,23 @@ namespace LaserWindowMain
                     var re = c.send_and_receive_sync(Client.byte_connect(to_send));
                     int x = (BitConverter.ToInt32(re.data, 4));
                     int y = (BitConverter.ToInt32(re.data, 8));
-
-                    //Console.WriteLine("Received: x=" + x.ToString() + " y=" + y.ToString());
                     if (x != -1 && y != -1)
                     {
-                        if(recording)
+                        double scr_left_pos = (A_x + D_x) / 2;
+                        double scr_left_length = D_y - A_y;
+                        double scr_right_pos = (B_x + C_x) / 2;
+                        double scr_right_length = C_y - B_y;
+                        double scrwidth = scr_right_pos - scr_left_pos;
+                        double k_ab = ((double)A_y - B_y) / (A_x - B_x);
+                        double ratio = scr_left_length / scr_right_length;
+
+                        x = (int)((x - scr_left_pos) / scrwidth * FullHW);
+                        x = FullHW - x;
+                        y = (int)(((y - (k_ab * (x - B_x) + B_y)) / ((1 - ratio) * (x - scr_left_pos) / scrwidth + ratio)) / scr_right_length * FullHW);
+
+                        Console.WriteLine("Received: x=" + x.ToString() + " y=" + y.ToString());
+                    
+                        if (recording)
                             tpf.Add(new TimePointF(x, y, (long)Math.Round((re.time - base_time).TotalMilliseconds)));
                         double x_ = (double)x / FullHW;
                         double y_ = (double)y / FullHW;
