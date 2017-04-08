@@ -9,7 +9,7 @@
 #include "opencv2/opencv.hpp"
 #include "SocketServer.h"
 #include <memory>
-
+#include <cmath>
 using namespace cv;
 using namespace std;
 
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 
 		//¿É¿¿ÐÔ¼ì²é
 		mtx.lock();
-		if (mouse.x-x0<3000 && mouse.y-y0<3000){
+		if (abs(mouse.x-x0)<1500 && abs(mouse.y-y0)<1500){
 			//SetCursorPos(mouse.x,mouse.y);
 			cout<<"set mouse x="<<mouse.x<<" y="<<mouse.y<<endl;
 			cout<<"width:"<<bgr_frame[0].rows<<"height:"<<bgr_frame[0].cols<<endl;
