@@ -60,7 +60,8 @@ int main(int argc, char** argv)
 	{
 		//5.´«ÈëÒ»Ö¡
 		cap >> src_frame;
-		if(src_frame.empty())	break;	
+		if(src_frame.empty())	break;
+        cv::flip(src_frame, src_frame, 1);
 		split(src_frame, bgr_frame);
 		minMaxLoc(bgr_frame[2],&minVal,&maxVal,&minloc,&maxloc);		
 
