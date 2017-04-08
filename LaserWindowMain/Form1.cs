@@ -179,21 +179,22 @@ namespace LaserWindowMain
                     var re = c.send_and_receive_sync(Client.byte_connect(to_send));
                     int x = (BitConverter.ToInt32(re.data, 4));
                     int y = (BitConverter.ToInt32(re.data, 8));
-
-                    int scr_left_pos = (A_x + D_x) / 2;
-                    int scr_left_length = D_y - A_y;
-                    int scr_right_pos = (B_x + C_x) / 2;
-                    int scr_right_length = C_y - B_y;
-                    int scrwidth = scr_right_pos - scr_left_pos;
-                    int k_ab = (A_y - B_y) / (A_x - B_x);
-                    int ratio = scr_left_length / scr_right_length;
-
-                    x = (x - scr_left_pos) / scrwidth;
-                    y = ((y - (k_ab * (x - B_x) + B_y)) / ((1 - ratio) * (x - scr_left_pos) / scrwidth + ratio)) / scr_right_length;
-
-                    //Console.WriteLine("Received: x=" + x.ToString() + " y=" + y.ToString());
                     if (x != -1 && y != -1)
                     {
+                        double scr_left_pos = (A_x + D_x) / 2;
+                        double scr_left_length = D_y - A_y;
+                        double scr_right_pos = (B_x + C_x) / 2;
+                        double scr_right_length = C_y - B_y;
+                        double scrwidth = scr_right_pos - scr_left_pos;
+                        double k_ab = ((double)A_y - B_y) / (A_x - B_x);
+                        double ratio = scr_left_length / scr_right_length;
+
+                        x = (int)((x - scr_left_pos) / scrwidth * FullHW);
+                        x = FullHW - x;
+                        y = (int)(((y - (k_ab * (x - B_x) + B_y)) / ((1 - ratio) * (x - scr_left_pos) / scrwidth + ratio)) / scr_right_length * FullHW);
+
+                        Console.WriteLine("Received: x=" + x.ToString() + " y=" + y.ToString());
+                    
                         if (recording)
                             tpf.Add(new TimePointF(x, y, (long)Math.Round((re.time - base_time).TotalMilliseconds)));
                         double x_ = (double)x / FullHW;
