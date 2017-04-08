@@ -33,14 +33,14 @@ namespace LaserWindowMain
         const int FullScreenWidth = 1366;
         const int FullScreenHeight = 768;
 
-        const int A_x = 1100;
-        const int A_y = 1000;
-        const int B_x = 8000;
-        const int B_y = 1100;
-        const int C_x = 8100;
-        const int C_y = 6900;
-        const int D_x = 1800;
-        const int D_y = 7200;
+        const int A_x = 2950;
+        const int A_y = 2150;
+        const int B_x = 7170;
+        const int B_y = 1750;
+        const int C_x = 3000;
+        const int C_y = 5100;
+        const int D_x = 7100;
+        const int D_y = 4900;
 
         KeyboardHook kh;
         bool pressing = false;
@@ -181,17 +181,20 @@ namespace LaserWindowMain
                     int y = (BitConverter.ToInt32(re.data, 8));
                     if (x != -1 && y != -1)
                     {
-                        double scr_left_pos = (A_x + D_x) / 2;
-                        double scr_left_length = D_y - A_y;
-                        double scr_right_pos = (B_x + C_x) / 2;
-                        double scr_right_length = C_y - B_y;
-                        double scrwidth = scr_right_pos - scr_left_pos;
-                        double k_ab = ((double)A_y - B_y) / (A_x - B_x);
-                        double ratio = scr_left_length / scr_right_length;
+                        //double scr_left_pos = (A_x + D_x) / 2;
+                        //double scr_left_length = D_y - A_y;
+                        //double scr_right_pos = (B_x + C_x) / 2;
+                        //double scr_right_length = C_y - B_y;
+                        //double scrwidth = scr_right_pos - scr_left_pos;
+                        //double k_ab = ((double)A_y - B_y) / (A_x - B_x);
+                        //double ratio = scr_left_length / scr_right_length;
 
-                        x = (int)((x - scr_left_pos) / scrwidth * FullHW);
+                        //x = (int)((x - scr_left_pos) / scrwidth * FullHW);
+                        //x = FullHW - x;
+                        //y = (int)(((y - (k_ab * (x - B_x) + B_y)) / ((1 - ratio) * (x - scr_left_pos) / scrwidth + ratio)) / scr_right_length * FullHW);
                         x = FullHW - x;
-                        y = (int)(((y - (k_ab * (x - B_x) + B_y)) / ((1 - ratio) * (x - scr_left_pos) / scrwidth + ratio)) / scr_right_length * FullHW);
+                        x = (x - A_x) * FullHW / (B_x - A_x);
+                        y = (y - A_y) * FullHW / (C_y - A_y);
 
                         Console.WriteLine("Received: x=" + x.ToString() + " y=" + y.ToString());
                     

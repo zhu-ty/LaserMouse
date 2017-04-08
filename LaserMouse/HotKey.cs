@@ -133,7 +133,7 @@ namespace LaserMouseCore
                         return 1;
                 }
             }
-            return Win32Api.CallNextHookEx(hHook, nCode, wParam, lParam);
+             return Win32Api.CallNextHookEx(hHook, nCode, wParam, lParam);
         }
         //根据已经按下的控制键生成key
         private Keys GetDownKeys(Keys key)
